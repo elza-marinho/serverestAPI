@@ -1,0 +1,44 @@
+name: Newman Run
+
+
+on:
+  
+  push:
+    branches: main
+  
+   
+  workflow_dispatch:
+
+
+jobs:
+  
+  build:
+    
+    runs-on: ubuntu-latest
+
+    
+    steps:
+     
+      - uses: actions/checkout@v3
+
+      # Runs a single command using the runners shell
+      - name: Create dir for report
+        run: |
+           mkdir testArtifacts
+           
+     
+     
+      - name: Install Newman
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
+          
+      - name:  Run Test
+        run: newman run ServeRest.postman_collection.json -e serveRest_env.postman_environment.json -r cli,htmlextra
+        
+      - name: Report
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: Report
+          path: newman
+       
